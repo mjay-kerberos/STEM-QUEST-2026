@@ -51,8 +51,8 @@ Explore the detection pipeline and how ai can be used to help analysts by buildi
 Open Terminal (macOS/Linux) or PowerShell (Windows) and run:
 
 ```bash
-git clone https://github.com/mjay-kerberos/ai-threat-workshop
-cd ai-threat-workshop
+git clone https://github.com/mjay-kerberos/STEM-QUEST-2026
+cd STEM-QUEST-2026
 ```
 
 ---
