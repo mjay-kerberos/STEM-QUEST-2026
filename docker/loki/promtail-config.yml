@@ -1,0 +1,48 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: apache
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: apache
+          host: dvwa
+          __path__: /var/log/apache2/access.log
+
+    pipeline_stages:
+      # Parse Apache Combined Log Format
+      - regex:
+          expression: '^(?P<remote_addr>\S+) \S+ \S+ \[(?P<time_local>[^\]]+)\] "(?P<method>\S+) (?P<request>[^"]+)" (?P<status>\d+) (?P<bytes_sent>\d+) "(?P<referer>[^"]*)" "(?P<user_agent>[^"]*)"'
+      - labels:
+          method:
+          status:
+      # Tag attack types based on URL content
+      - match:
+          selector: '{job="apache"}'
+          stages:
+            - regex:
+                expression: '(?i)(?P<attack_sqli>union\s+select|or\s+1=1|sleep\s*\(|extractvalue|order\s+by\s+\d|information_schema)'
+                source: request
+            - regex:
+                expression: '(?i)(?P<attack_xss><script|onerror=|onload=|javascript:|alert\(|svg.*onload)'
+                source: request
+            - regex:
+                expression: '(?i)(?P<attack_brute>\/vulnerabilities\/brute)'
+                source: request
+            - regex:
+                expression: '(?i)(?P<attack_cmdi>%3b|%7c|\||\;|&&|\/etc\/passwd|whoami|wget\s|curl\s.*http)'
+                source: request
+            - labels:
+                attack_sqli:
+                attack_xss:
+                attack_brute:
+                attack_cmdi:

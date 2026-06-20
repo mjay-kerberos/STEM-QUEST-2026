@@ -1,0 +1,8 @@
+{
+  "0": "benign",
+  "1": "brute_force",
+  "2": "command_injection",
+  "3": "file_inclusion",
+  "4": "sql_injection",
+  "5": "xss"
+}

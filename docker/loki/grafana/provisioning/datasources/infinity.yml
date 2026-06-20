@@ -1,0 +1,11 @@
+apiVersion: 1
+datasources:
+  - name: Infinity - AI Analyst
+    type: yesoreyeram-infinity-datasource
+    uid: infinity-ai
+    access: proxy
+    isDefault: false
+    editable: false
+    jsonData:
+      tlsAuth: false
+      tlsAuthWithCACert: false

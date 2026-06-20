@@ -1,0 +1,195 @@
+{
+  "_comment": "Sample alert payloads — used as demo fixtures when the live log buffer is empty. Descriptions reference OWASP Top 10 2021 and MITRE CWE.",
+  "alerts": [
+    {
+      "_source": {
+        "timestamp": "2026-06-01T14:01:23Z",
+        "rule": {
+          "id": "100101",
+          "level": 14,
+          "description": "SQL Injection (High) — Classic payload: UNION/SELECT or time-based blind detected [OWASP A03:2021 · CWE-89]",
+          "groups": ["workshop_sqli", "attack", "sql_injection"]
+        },
+        "data": {
+          "url": "/dvwa/vulnerabilities/sqli/?id=1%27+UNION+SELECT+user%2Cpassword+FROM+users--",
+          "srcip": "45.33.32.156",
+          "protocol": "GET",
+          "id": "200",
+          "bytes": 8421
+        },
+        "agent": {"id": "001", "name": "dvwa-monitor", "ip": "172.20.0.5"}
+      }
+    },
+    {
+      "_source": {
+        "timestamp": "2026-06-01T14:02:11Z",
+        "rule": {
+          "id": "100110",
+          "level": 10,
+          "description": "Brute Force — Credential guessing attempt on login endpoint [OWASP A07:2021 · CWE-307]",
+          "groups": ["workshop_bruteforce", "attack"]
+        },
+        "data": {
+          "url": "/dvwa/vulnerabilities/brute/?username=admin&password=letmein&Login=Login",
+          "srcip": "198.20.69.74",
+          "protocol": "GET",
+          "id": "200",
+          "bytes": 420
+        },
+        "agent": {"id": "001", "name": "dvwa-monitor", "ip": "172.20.0.5"}
+      }
+    },
+    {
+      "_source": {
+        "timestamp": "2026-06-01T14:03:02Z",
+        "rule": {
+          "id": "100111",
+          "level": 14,
+          "description": "Brute Force (High-Volume) — ≥50 auth attempts in 60 s; automated tool likely [OWASP A07:2021 · CWE-307]",
+          "groups": ["workshop_bruteforce", "attack"]
+        },
+        "data": {
+          "url": "/dvwa/vulnerabilities/brute/?username=admin&password=qwerty&Login=Login",
+          "srcip": "198.20.69.74",
+          "protocol": "GET",
+          "id": "200",
+          "bytes": 420
+        },
+        "agent": {"id": "001", "name": "dvwa-monitor", "ip": "172.20.0.5"}
+      }
+    },
+    {
+      "_source": {
+        "timestamp": "2026-06-01T14:03:55Z",
+        "rule": {
+          "id": "100121",
+          "level": 12,
+          "description": "Cross-Site Scripting (High) — Script injection payload confirmed in request [OWASP A03:2021 · CWE-79]",
+          "groups": ["workshop_xss", "attack", "web"]
+        },
+        "data": {
+          "url": "/dvwa/vulnerabilities/xss_r/?name=%3Cscript%3Ealert%28%27xss%27%29%3C%2Fscript%3E",
+          "srcip": "185.220.101.45",
+          "protocol": "GET",
+          "id": "200",
+          "bytes": 920
+        },
+        "agent": {"id": "001", "name": "dvwa-monitor", "ip": "172.20.0.5"}
+      }
+    },
+    {
+      "_source": {
+        "timestamp": "2026-06-01T14:04:30Z",
+        "rule": {
+          "id": "100130",
+          "level": 13,
+          "description": "OS Command Injection — Shell metacharacter or chained command detected in parameter [OWASP A03:2021 · CWE-78]",
+          "groups": ["workshop_cmdi", "attack", "web"]
+        },
+        "data": {
+          "url": "/dvwa/vulnerabilities/exec/?ip=127.0.0.1%3Bcat+%2Fetc%2Fpasswd",
+          "srcip": "89.248.172.16",
+          "protocol": "POST",
+          "id": "200",
+          "bytes": 1240
+        },
+        "agent": {"id": "001", "name": "dvwa-monitor", "ip": "172.20.0.5"}
+      }
+    },
+    {
+      "_source": {
+        "timestamp": "2026-06-01T14:05:18Z",
+        "rule": {
+          "id": "100140",
+          "level": 12,
+          "description": "File Inclusion — Path traversal, LFI, or RFI attempt detected [OWASP A05:2021 · CWE-22]",
+          "groups": ["workshop_lfi", "attack", "web"]
+        },
+        "data": {
+          "url": "/dvwa/vulnerabilities/fi/?page=../../../../etc/passwd",
+          "srcip": "45.33.32.156",
+          "protocol": "GET",
+          "id": "200",
+          "bytes": 1840
+        },
+        "agent": {"id": "001", "name": "dvwa-monitor", "ip": "172.20.0.5"}
+      }
+    },
+    {
+      "_source": {
+        "timestamp": "2026-06-01T14:06:01Z",
+        "rule": {
+          "id": "100000",
+          "level": 3,
+          "description": "Web request — no known attack pattern matched (benign)",
+          "groups": ["web", "accesslog"]
+        },
+        "data": {
+          "url": "/dvwa/index.php",
+          "srcip": "172.20.0.4",
+          "protocol": "GET",
+          "id": "200",
+          "bytes": 4302
+        },
+        "agent": {"id": "001", "name": "dvwa-monitor", "ip": "172.20.0.5"}
+      }
+    },
+    {
+      "_source": {
+        "timestamp": "2026-06-01T14:06:42Z",
+        "rule": {
+          "id": "100000",
+          "level": 3,
+          "description": "Web request — no known attack pattern matched (benign)",
+          "groups": ["web", "accesslog"]
+        },
+        "data": {
+          "url": "/dvwa/dvwa/css/main.css",
+          "srcip": "172.20.0.4",
+          "protocol": "GET",
+          "id": "200",
+          "bytes": 12044
+        },
+        "agent": {"id": "001", "name": "dvwa-monitor", "ip": "172.20.0.5"}
+      }
+    },
+    {
+      "_source": {
+        "timestamp": "2026-06-01T14:07:11Z",
+        "rule": {
+          "id": "100100",
+          "level": 12,
+          "description": "SQL Injection — Attempt on SQLi endpoint; payload signature pending analysis [OWASP A03:2021 · CWE-89]",
+          "groups": ["workshop_sqli", "attack"]
+        },
+        "data": {
+          "url": "/dvwa/vulnerabilities/sqli/?id=1%27+OR+%271%27%3D%271",
+          "srcip": "45.33.32.156",
+          "protocol": "GET",
+          "id": "200",
+          "bytes": 6210
+        },
+        "agent": {"id": "001", "name": "dvwa-monitor", "ip": "172.20.0.5"}
+      }
+    },
+    {
+      "_source": {
+        "timestamp": "2026-06-01T14:08:00Z",
+        "rule": {
+          "id": "100150",
+          "level": 8,
+          "description": "Automated Scanner / Recon — High-frequency requests suggest automated tool [OWASP A05:2021 · CWE-200]",
+          "groups": ["workshop_scan", "recon", "web"]
+        },
+        "data": {
+          "url": "/dvwa/login.php",
+          "srcip": "89.248.172.16",
+          "protocol": "GET",
+          "id": "200",
+          "bytes": 510
+        },
+        "agent": {"id": "001", "name": "dvwa-monitor", "ip": "172.20.0.5"}
+      }
+    }
+  ]
+}

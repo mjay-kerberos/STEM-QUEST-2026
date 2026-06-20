@@ -1,0 +1,18 @@
+[
+  "rule_id",
+  "rule_level",
+  "http_method_post",
+  "status_code",
+  "url_length",
+  "bytes_sent",
+  "has_sqli_token",
+  "has_xss_token",
+  "has_cmd_token",
+  "has_traversal",
+  "has_encoded_chars",
+  "source_is_external",
+  "requests_per_min",
+  "failed_logins",
+  "hour_of_day",
+  "is_off_hours"
+]

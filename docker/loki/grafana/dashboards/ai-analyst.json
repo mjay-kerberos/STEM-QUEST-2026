@@ -1,0 +1,709 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "description": "AI Threat Detection Workshop — AI Analyst Risk Scores & Incident Briefs",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [
+    {
+      "title": "SIEM Pipeline View",
+      "url": "/d/ai-threat-workshop",
+      "type": "link",
+      "icon": "external link",
+      "targetBlank": false
+    }
+  ],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 100,
+      "title": "AI RISK SCORES — LIVE ALERT TABLE",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "infinity-ai"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 40
+              },
+              {
+                "color": "orange",
+                "value": 65
+              },
+              {
+                "color": "red",
+                "value": 85
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "risk_score"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Risk Score"
+              },
+              {
+                "id": "custom.width",
+                "value": 110
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "gauge",
+                  "mode": "gradient"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 40
+                    },
+                    {
+                      "color": "orange",
+                      "value": 65
+                    },
+                    {
+                      "color": "red",
+                      "value": 85
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "risk_label"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Level"
+              },
+              {
+                "id": "custom.width",
+                "value": 90
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "CRITICAL": {
+                        "color": "red",
+                        "index": 0
+                      }
+                    }
+                  },
+                  {
+                    "type": "value",
+                    "options": {
+                      "HIGH": {
+                        "color": "orange",
+                        "index": 1
+                      }
+                    }
+                  },
+                  {
+                    "type": "value",
+                    "options": {
+                      "MEDIUM": {
+                        "color": "yellow",
+                        "index": 2
+                      }
+                    }
+                  },
+                  {
+                    "type": "value",
+                    "options": {
+                      "LOW": {
+                        "color": "green",
+                        "index": 3
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "attack_type"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Attack Type"
+              },
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "source_ip"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Source IP"
+              },
+              {
+                "id": "custom.width",
+                "value": 130
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "timestamp"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Timestamp"
+              },
+              {
+                "id": "custom.width",
+                "value": 175
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "url"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "URL"
+              },
+              {
+                "id": "custom.width",
+                "value": 320
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "description"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Rule Description"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 10,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Risk Score"
+          }
+        ]
+      },
+      "title": "Live AI Risk Scores (auto-refresh every 5 s)",
+      "type": "table",
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://ai-analyst:8000/api/alerts",
+          "url_options": {
+            "method": "GET",
+            "data": ""
+          },
+          "parser": "backend",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "timestamp",
+              "text": "timestamp",
+              "type": "string"
+            },
+            {
+              "selector": "source_ip",
+              "text": "source_ip",
+              "type": "string"
+            },
+            {
+              "selector": "risk_score",
+              "text": "risk_score",
+              "type": "number"
+            },
+            {
+              "selector": "risk_label",
+              "text": "risk_label",
+              "type": "string"
+            },
+            {
+              "selector": "attack_type",
+              "text": "attack_type",
+              "type": "string"
+            },
+            {
+              "selector": "url",
+              "text": "url",
+              "type": "string"
+            },
+            {
+              "selector": "description",
+              "text": "description",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "id": 101,
+      "title": "RISK SCORE DISTRIBUTION",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "infinity-ai"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 40
+              },
+              {
+                "color": "orange",
+                "value": 65
+              },
+              {
+                "color": "red",
+                "value": 85
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 0,
+        "y": 14
+      },
+      "id": 20,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "count"
+          ],
+          "fields": "/^risk_score$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "title": "Total Alerts Scored",
+      "type": "stat",
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://ai-analyst:8000/api/alerts",
+          "url_options": {
+            "method": "GET",
+            "data": ""
+          },
+          "parser": "backend",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "risk_score",
+              "text": "risk_score",
+              "type": "number"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "infinity-ai"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 6,
+        "y": 14
+      },
+      "id": 21,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "max"
+          ],
+          "fields": "/^risk_score$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "value_and_name"
+      },
+      "title": "Highest Risk Score",
+      "type": "stat",
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://ai-analyst:8000/api/alerts",
+          "url_options": {
+            "method": "GET",
+            "data": ""
+          },
+          "parser": "backend",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "risk_score",
+              "text": "risk_score",
+              "type": "number"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "infinity-ai"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 65
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 12,
+        "y": 14
+      },
+      "id": 22,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "/^risk_score$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "title": "Avg Risk Score",
+      "type": "stat",
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://ai-analyst:8000/api/alerts",
+          "url_options": {
+            "method": "GET",
+            "data": ""
+          },
+          "parser": "backend",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "risk_score",
+              "text": "risk_score",
+              "type": "number"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "infinity-ai"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 18,
+        "y": 14
+      },
+      "id": 23,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "min"
+          ],
+          "fields": "/^risk_score$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "title": "Lowest Risk Score",
+      "type": "stat",
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://ai-analyst:8000/api/alerts",
+          "url_options": {
+            "method": "GET",
+            "data": ""
+          },
+          "parser": "backend",
+          "root_selector": "",
+          "columns": [
+            {
+              "selector": "risk_score",
+              "text": "risk_score",
+              "type": "number"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      },
+      "id": 102,
+      "title": "AI ANALYST LIVE DASHBOARD — INCIDENT BRIEFS",
+      "type": "row"
+    },
+    {
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "id": 30,
+      "options": {
+        "mode": "html",
+        "content": "<div style=\"padding: 8px 12px; background: #1a1a2e; border-left: 4px solid #f46800; border-radius: 4px; color: #ccc; font-size: 13px;\">⬇ The panel below is the <strong>live AI Analyst dashboard</strong> running at <a href=\"http://localhost:8000\" target=\"_blank\" style=\"color:#f46800\">http://localhost:8000</a>. It shows the Random Forest risk score for each alert and — when Ollama/Mistral is running — a full LLM-generated incident brief for the selected event.</div>"
+      },
+      "title": "",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "gridPos": {
+        "h": 24,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "id": 31,
+      "options": {
+        "mode": "html",
+        "content": "<iframe src=\"http://localhost:8000\" width=\"100%\" height=\"680px\" frameborder=\"0\" style=\"border: none; border-radius: 6px; background: #111;\"></iframe>"
+      },
+      "title": "AI Analyst — Risk Scores & LLM Incident Briefs",
+      "type": "text"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 38,
+  "tags": [
+    "threat-detection",
+    "workshop",
+    "ai",
+    "llm"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "AI Analyst — Risk Scores & Briefs",
+  "uid": "ai-analyst-dashboard",
+  "version": 1
+}

@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Threat Analyst — STEM Quest Workshop</title>
+  <style>
+    :root {
+      --bg:        #0b1020;
+      --panel:    #11182f;
+      --panel-2:  #1a2244;
+      --border:   #233059;
+      --text:     #e6ebf5;
+      --muted:    #8a93b3;
+      --accent:   #5cd1ff;
+      --low:      #4ade80;
+      --medium:   #facc15;
+      --high:     #fb923c;
+      --critical: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 14px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header {
+      padding: 16px 24px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    h1 { margin: 0; font-size: 18px; letter-spacing: 0.5px; }
+    h1 .tag { color: var(--accent); font-weight: normal; margin-left: 8px; }
+    .status { font-size: 12px; color: var(--muted); }
+    .status .ok    { color: var(--low); }
+    .status .warn  { color: var(--high); }
+    main {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+      padding: 16px 24px;
+    }
+    @media (max-width: 1000px) { main { grid-template-columns: 1fr; } }
+    section {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    section h2 {
+      margin: 0;
+      padding: 12px 16px;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--panel-2);
+    }
+    .alerts { max-height: 70vh; overflow-y: auto; }
+    .alert {
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .alert:hover { background: var(--panel-2); }
+    .score {
+      font-size: 22px;
+      font-weight: 700;
+      text-align: center;
+      padding: 6px 0;
+      border-radius: 6px;
+      width: 56px;
+    }
+    .score.low      { background: rgba(74,222,128,.15); color: var(--low); }
+    .score.medium   { background: rgba(250,204,21,.15); color: var(--medium); }
+    .score.high     { background: rgba(251,146,60,.15); color: var(--high); }
+    .score.critical { background: rgba(239,68,68,.18); color: var(--critical); }
+    .label {
+      font-size: 10px;
+      letter-spacing: 0.8px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+    .label.low      { background: rgba(74,222,128,.2);  color: var(--low); }
+    .label.medium   { background: rgba(250,204,21,.2);  color: var(--medium); }
+    .label.high     { background: rgba(251,146,60,.2);  color: var(--high); }
+    .label.critical { background: rgba(239,68,68,.25);  color: var(--critical); }
+    .alert .meta { color: var(--muted); font-size: 12px; }
+    .alert .desc { font-size: 13px; }
+    .alert .url  { color: var(--accent); word-break: break-all; max-width: 540px; }
+    .alert .right { text-align: right; }
+    .feat-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      font-size: 12px;
+    }
+    .feat-row .name { flex: 0 0 180px; color: var(--muted); }
+    .feat-row .bar {
+      flex: 1;
+      background: var(--panel-2);
+      height: 10px;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    .feat-row .bar > div {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #a78bfa);
+    }
+    .feat-row .val { width: 60px; text-align: right; color: var(--text); }
+    #brief {
+      padding: 14px 16px;
+      white-space: pre-wrap;
+      font-size: 12.5px;
+      color: var(--text);
+      min-height: 200px;
+    }
+    #brief.empty { color: var(--muted); font-style: italic; }
+    footer {
+      padding: 10px 24px;
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+    .pill {
+      display: inline-block;
+      padding: 1px 6px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-size: 10px;
+      color: var(--muted);
+      margin-right: 6px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Threat Analyst <span class="tag">// Apache Logs × Random Forest × Mistral</span></h1>
+    <div class="status" id="status">connecting…</div>
+  </header>
+
+  <main>
+    <section>
+      <h2>Live alert stream</h2>
+      <div id="alerts" class="alerts"></div>
+    </section>
+
+    <section>
+      <h2>Selected alert · AI brief</h2>
+      <div id="brief" class="empty">Click any alert on the left to generate an AI incident brief.</div>
+      <h2>Feature importances (model)</h2>
+      <div id="features"></div>
+    </section>
+  </main>
+
+  <footer>
+    AI Threat Detection Workshop · STEM Quest · Columbia VP&amp;S · 2026 ·
+    <a href="/api/health" style="color: var(--accent);">/api/health</a> ·
+    <a href="/api/alerts" style="color: var(--accent);">/api/alerts</a>
+    <br style="margin-top:4px"/>
+    <span style="font-size:10px; color: var(--muted);">
+      Rule IDs are workshop-custom (modeled on Wazuh's 5-digit scheme) ·
+      100100–109 = SQLi (CWE-89) · 100110–119 = Brute Force (CWE-307) ·
+      100120–129 = XSS (CWE-79) · 100130–139 = Command Injection (CWE-78) ·
+      100140–149 = File Inclusion (CWE-22) · Classifications: OWASP Top 10 2021
+    </span>
+  </footer>
+
+  <script>
+    const $alerts = document.getElementById("alerts");
+    const $brief  = document.getElementById("brief");
+    const $feats  = document.getElementById("features");
+    const $status = document.getElementById("status");
+
+    const RULE_NAMES = {
+      100000: "Benign Request",
+      100100: "SQL Injection",
+      100101: "SQL Injection — High Confidence",
+      100110: "Brute Force",
+      100111: "Brute Force — High Volume",
+      100120: "Cross-Site Scripting (XSS)",
+      100121: "XSS — High Confidence",
+      100130: "OS Command Injection",
+      100140: "File Inclusion / Path Traversal",
+      100150: "Automated Scanner / Recon",
+      // Legacy fallback ID (now replaced by 100000)
+      31100:  "Benign Request",
+    };
+
+    function ruleName(id) {
+      return RULE_NAMES[+id] ?? RULE_NAMES[id] ?? `Unknown Rule ${id}`;
+    }
+
+    function labelClass(label) {
+      return (label || "").toLowerCase();
+    }
+
+    function renderAlerts(items) {
+      $alerts.innerHTML = "";
+      if (!items.length) {
+        $alerts.innerHTML =
+          '<div style="padding:24px;color:var(--muted);text-align:center;">' +
+          'No alerts yet. Run an attack against DVWA and they\'ll appear here.' +
+          '</div>';
+        return;
+      }
+      items.forEach((a, i) => {
+        const card = document.createElement("div");
+        card.className = "alert";
+        const cls = labelClass(a.risk_label);
+        card.innerHTML = `
+          <div class="score ${cls}">${a.risk_score}</div>
+          <div>
+            <div class="desc">
+              <span class="pill">${ruleName(a.rule_id)}</span>
+              <span class="pill">severity ${a.rule_level ?? "?"}/15</span>
+              <span class="label ${cls}">${a.risk_label}</span>
+              ${a.attack_type ? `<span class="label ${cls}">${a.attack_type.replaceAll("_"," ")}</span>` : ""}
+            </div>
+            <div class="meta">${a.description ?? ""}</div>
+            <div class="url">${a.source_ip ?? "?"} &rarr; ${a.url ?? ""}</div>
+          </div>
+          <div class="right meta">${(a.timestamp ?? "").replace("T"," ").replace("Z","")}</div>
+        `;
+        card.addEventListener("click", () => analyze(a, i));
+        $alerts.appendChild(card);
+      });
+    }
+
+    function renderFeatures(items) {
+      const max = Math.max(...items.map((i) => i.importance), 0.001);
+      $feats.innerHTML = "";
+      items.slice(0, 10).forEach((f) => {
+        const pct = (f.importance / max) * 100;
+        $feats.insertAdjacentHTML("beforeend", `
+          <div class="feat-row">
+            <div class="name">${f.name}</div>
+            <div class="bar"><div style="width:${pct}%"></div></div>
+            <div class="val">${f.importance.toFixed(3)}</div>
+          </div>
+        `);
+      });
+    }
+
+    async function analyze(summary, idx) {
+      $brief.className = "";
+      $brief.textContent = "Analyzing… (LLM brief takes 5–15 s on Mistral 7B)";
+      try {
+        // Reconstruct a structured alert from the summary row
+        const alert = {
+          _source: {
+            timestamp: summary.timestamp,
+            rule: {
+              id: summary.rule_id,
+              level: summary.rule_level,
+              description: summary.description,
+            },
+            data: {
+              url: summary.url,
+              srcip: summary.source_ip,
+              protocol: "GET",
+              id: 200,
+              bytes: 1000,
+            },
+            agent: { name: "dvwa-monitor", ip: "172.20.0.5" },
+          },
+        };
+        const r = await fetch("/api/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ alert }),
+        });
+        const data = await r.json();
+        $brief.textContent = data.brief || "(no brief)";
+      } catch (e) {
+        $brief.textContent = "Error: " + e.message;
+      }
+    }
+
+    async function poll() {
+      try {
+        const [aR, fR, hR] = await Promise.all([
+          fetch("/api/alerts").then((r) => r.json()),
+          fetch("/api/feature_importance").then((r) => r.json()),
+          fetch("/api/health").then((r) => r.json()),
+        ]);
+        renderAlerts(aR);
+        if (Array.isArray(fR)) renderFeatures(fR);
+        $status.innerHTML = hR.model_loaded
+          ? `<span class="ok">● model loaded</span> · ${hR.disable_llm ? "LLM disabled (fallback brief)" : "LLM " + hR.ollama_model}`
+          : `<span class="warn">● model missing — run training</span>`;
+      } catch (e) {
+        $status.innerHTML = `<span class="warn">● disconnected — ${e.message}</span>`;
+      }
+    }
+
+    poll();
+    setInterval(poll, 5000);
+  </script>
+</body>
+</html>

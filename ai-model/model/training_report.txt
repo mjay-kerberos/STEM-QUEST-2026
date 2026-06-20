@@ -1,0 +1,48 @@
+AI Threat Detection Workshop — Training Report
+Generated: 2026-05-21 22:39:59
+============================================================
+Dataset       : /Users/julietmeza/Desktop/Workshop/ai-threat-workshop/ai-model/data/training_dataset.csv
+Total samples : 5,000
+Train / Test  : 4,000 / 1,000
+
+Model         : RandomForestClassifier
+n_estimators  : 100
+max_depth     : 12
+Training time : 0.1s
+
+Accuracy      : 100.00%
+ROC-AUC       : 1.0000
+CV ROC-AUC    : 1.0000 ± 0.0000
+
+Classification Report:
+              precision    recall  f1-score   support
+
+      benign       1.00      1.00      1.00       600
+      attack       1.00      1.00      1.00       400
+
+    accuracy                           1.00      1000
+   macro avg       1.00      1.00      1.00      1000
+weighted avg       1.00      1.00      1.00      1000
+
+
+Confusion Matrix:
+  TN=600  FP=0
+  FN=0  TP=400
+
+Feature Importances:
+  rule_level             0.3631
+  url_length             0.1915
+  rule_id                0.1727
+  source_is_external     0.0980
+  requests_per_min       0.0843
+  bytes_sent             0.0439
+  has_encoded_chars      0.0215
+  has_cmd_token          0.0079
+  failed_logins          0.0061
+  status_code            0.0039
+  has_xss_token          0.0035
+  has_sqli_token         0.0017
+  http_method_post       0.0015
+  hour_of_day            0.0003
+  has_traversal          0.0001
+  is_off_hours           0.0001

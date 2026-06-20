@@ -1,0 +1,113 @@
+# ─────────────────────────────────────────────────────────
+# AI Threat Detection Workshop — default stack
+# Run:   docker compose up -d
+# Stop:  docker compose down -v
+#
+# Services:
+#   dvwa        — Damn Vulnerable Web App (target)
+#   dvwa-db     — MariaDB backing store for DVWA
+#   ai-analyst  — FastAPI server + Random Forest + log ingestor + dashboard
+#   ollama      — local LLM runtime for the natural-language incident brief
+#
+# For the Grafana + Loki SIEM overlay:
+#   docker compose -f docker-compose.yml -f docker-compose.loki.yml up -d
+# ─────────────────────────────────────────────────────────
+
+services:
+
+  # ── DVWA — Damn Vulnerable Web App ─────────────────────
+  dvwa:
+    build:
+      context: ./docker/dvwa
+      dockerfile: Dockerfile
+    image: ai-workshop/dvwa:latest
+    container_name: workshop-dvwa
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      - DB_SERVER=dvwa-db
+      - DB_PORT=3306
+      - DB_DATABASE=dvwa
+      - DB_USERNAME=dvwa
+      - DB_PASSWORD=p@ssw0rd
+      - RECAPTCHA_PRIV_KEY=
+      - RECAPTCHA_PUB_KEY=
+      - DEFAULT_SECURITY_LEVEL=low
+    depends_on:
+      dvwa-db:
+        condition: service_healthy
+    volumes:
+      - dvwa-logs:/var/log/apache2
+    networks:
+      - workshop-net
+
+  # ── DVWA database ──────────────────────────────────────
+  dvwa-db:
+    image: mariadb:10.6
+    container_name: workshop-dvwa-db
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=dvwa_root
+      - MYSQL_DATABASE=dvwa
+      - MYSQL_USER=dvwa
+      - MYSQL_PASSWORD=p@ssw0rd
+    volumes:
+      - dvwa-db-data:/var/lib/mysql
+    networks:
+      - workshop-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pdvwa_root"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── AI Analyst Server ──────────────────────────────────
+  ai-analyst:
+    build:
+      context: ./ai-model
+      dockerfile: Dockerfile
+    image: ai-workshop/analyst:latest
+    container_name: workshop-ai
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - APACHE_LOG_PATH=/var/log/apache2/access.log
+      - ENABLE_INGEST=true
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_MODEL=mistral:7b-instruct-q4_K_M
+      - MODEL_PATH=/app/model/rf_classifier.pkl
+      - DISABLE_LLM=false
+    volumes:
+      - dvwa-logs:/var/log/apache2:ro
+      - ./ai-model/model:/app/model
+      - ./ai-model/data:/app/data
+    depends_on:
+      - dvwa
+      - ollama
+    networks:
+      - workshop-net
+
+  # ── Ollama — local LLM runtime ─────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: workshop-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+      - ./scripts/ollama-entrypoint.sh:/ollama-entrypoint.sh:ro
+    entrypoint: ["/bin/sh", "/ollama-entrypoint.sh"]
+    networks:
+      - workshop-net
+
+volumes:
+  dvwa-logs:
+  dvwa-db-data:
+  ollama-data:
+
+networks:
+  workshop-net:
+    driver: bridge
